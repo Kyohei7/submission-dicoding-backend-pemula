@@ -75,7 +75,6 @@ const getAllBooksHandler = (request, h) => {
 const getDetailBooksHandler = (request, h) => {
   const {bookId} = request.params;
   const book = books.filter((n) => n.id === bookId)[0];
-  console.log(book);
 
   if (book !== undefined) {
       const response = h.response({
@@ -94,5 +93,68 @@ const getDetailBooksHandler = (request, h) => {
   return response;
 }
 
-module.exports = { addBookHandler, getAllBooksHandler, getDetailBooksHandler }
+const editBookByIdHanler = (request, h) => {
+  const {bookId} = request.params;
+  const { 
+    name, year, author, summary,
+    publisher, pageCount, readPage,
+    reading } = request.payload
+    const updatedAt = new Date().toISOString();
+
+    const index = books.findIndex((book) => book.id === bookId);
+  
+  if ( index !== -1 ) {
+    books[index] = {
+      ...books[index],
+      name,
+      year,
+      author,
+      summary,
+      publisher,
+      pageCount,
+      readPage,
+      reading,
+      updatedAt
+    }
+
+    if (name === undefined) {
+      const response = h.response({
+        status: 'fail',
+        message: 'Gagal memperbarui buku. Mohon isi nama buku',
+      });
+      response.code(400);
+      return response;
+    }
+
+    if (readPage > pageCount) {
+      const response = h.response({
+        status: 'fail',
+        message: "Gagal memperbarui buku. readPage tidak boleh lebih besar dari pageCount",
+      });
+      response.code(400);
+      return response;
+    }
+
+    const response = h.response({
+      status: 'success',
+      message: 'Buku Berhasil Memperbarui Catatan',
+    });
+    response.code(200);
+    return response;
+  }
+    const response = h.response({
+      status: 'fail',
+      message: 'Gagal memperbarui catatan. Id tidak ditemukan',
+    });
+    response.code(404);
+    return response;
+  
+}
+
+module.exports = { 
+  addBookHandler, 
+  getAllBooksHandler, 
+  getDetailBooksHandler,
+  editBookByIdHanler 
+}
 
