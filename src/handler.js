@@ -1,5 +1,5 @@
 const { nanoid } = require('nanoid');
-const { books } = require('./books')
+const books = require('./books')
 
 const addBookHandler = (request, h) => {
     const { 
@@ -60,13 +60,11 @@ const addBookHandler = (request, h) => {
 
 // Belum Done
 const getAllBooksHandler = (request, h) => {
-  const {id} = request.params;
-  const data = books.filter((book) => {
-    return book.id
-  })
+  const isSuccess = books.filter((books) => books.id === id)
+  console.log(isSuccess);
   const response = h.response({
     status: 'success',
-    data: books
+    data: { books }
   });
   response.code(200);
   return response;
@@ -92,6 +90,26 @@ const getDetailBooksHandler = (request, h) => {
   response.code(404);
   return response;
 }
+// const getListBooksByNameHandler = (request, h) => {
+//   const {name} = request.payload;
+//   const book = books.filter((n) => n.name === name);
+
+//   if (book !== undefined) {
+//       const response = h.response({
+//       status: 'success',
+//       data: book
+//       });
+//       response.code(200)
+//       return response
+//   }
+
+//   const response = h.response({
+//     status: 'fail',
+//     message: 'Buku tidak ditemukan',
+//   });
+//   response.code(404);
+//   return response;
+// }
 
 const editBookByIdHanler = (request, h) => {
   const {bookId} = request.params;
@@ -177,6 +195,6 @@ module.exports = {
   getAllBooksHandler,
   getDetailBooksHandler,
   editBookByIdHanler,
-  deleteBookByIdHandler
+  deleteBookByIdHandler,
 }
 
